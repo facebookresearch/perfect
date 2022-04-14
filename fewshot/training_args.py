@@ -1,64 +1,96 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+# This file is part of PERFECT.
+# See https://github.com/facebookresearch/perfect for further info.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from dataclasses import dataclass, field
-from typing import Optional
 from transformers import TrainingArguments
+from typing import Optional
+
 
 @dataclass
 class FewShotTrainingArguments(TrainingArguments):
     # Prompt-tuning parameters.
-    prompt_tune: Optional[bool] = field(default=False, metadata={"help": "If sets, adds prompts token to the input and only tune them."}) 
+    prompt_tune: Optional[bool] = field(default=False, metadata={
+        "help": "If sets, adds prompts token to the input and only tune them."})
     prompt_length: Optional[int] = field(default=20, metadata={"help": "Sets the number of tokens for prompt-tuning."})
-    init_prompt_from_vocab: Optional[bool] = field(default=True, metadata={"help": "If set, initializes the prompt tokens' embedding"
-        "from the given pretrained model's vocabulary."})
+    init_prompt_from_vocab: Optional[bool] = field(default=True,
+                                                   metadata={"help": "If set, initializes the prompt tokens' embedding"
+                                                                     "from the given pretrained model's vocabulary."})
     prompt_init_range: Optional[float] = field(default=1e-4, metadata={"help": "Defines the initialization range."})
     # perfect parameters.
-    label_embeddings_as_centroids: Optional[bool]= field(default=False, metadata={"help": "if set, uses label embeddings as centroids."})
+    label_embeddings_as_centroids: Optional[bool] = field(default=False, metadata={
+        "help": "if set, uses label embeddings as centroids."})
     mask_position: Optional[str] = field(default=None, metadata={"help": "This defines the position of mask in case of"
-    "having two sentences `0`: [p,h,m],[]  `1`: [p,m,h],[]  `2`: [p],[m,h] , `3`: [p],[h,m]"})
+                                                                         "having two sentences `0`: [p,h,m],[]  `1`: [p,m,h],[]  `2`: [p],[m,h] , `3`: [p],[h,m]"})
     compute_time: Optional[bool] = field(default=False, metadata={"help": "If set, computes the training time."})
-    compute_inference_time: Optional[bool] = field(default=False, metadata={"help": "If set, computes the inference time."})
+    compute_inference_time: Optional[bool] = field(default=False,
+                                                   metadata={"help": "If set, computes the inference time."})
     compute_memory: Optional[bool] = field(default=False, metadata={"help": "If set, computes the memory."})
-    train_classifier: Optional[bool] = field(default=False, metadata={"help": "If set trains a classifier in a conventional way of finetuning."})
-    vectorize_pet: Optional[bool] = field(default=False, 
-        metadata={"help": "If set and feasible (length of verbalizers are the same), vectorizes the pet."})
+    train_classifier: Optional[bool] = field(default=False, metadata={
+        "help": "If set trains a classifier in a conventional way of finetuning."})
+    vectorize_pet: Optional[bool] = field(default=False,
+                                          metadata={
+                                              "help": "If set and feasible (length of verbalizers are the same), vectorizes the pet."})
     multiclass_ce_loss: Optional[bool] = field(default=False,
-        metadata={"help":"If set uses the multiclass cross-entropy loss."})
-    token_hinge_loss: Optional[bool] = field(default=False, 
-        metadata={"help": "If set, computes a multi-class classification hinge loss over the tokens."})
-    classifier_eval: Optional[bool] = field(default=False, metadata={"help": "If set, uses the trained classifier" 
-        "logits during evaluation."})
+                                               metadata={"help": "If set uses the multiclass cross-entropy loss."})
+    token_hinge_loss: Optional[bool] = field(default=False,
+                                             metadata={
+                                                 "help": "If set, computes a multi-class classification hinge loss over the tokens."})
+    classifier_eval: Optional[bool] = field(default=False, metadata={"help": "If set, uses the trained classifier"
+                                                                             "logits during evaluation."})
     prototypical_eval: Optional[bool] = field(default=False,
-        metadata={"help": "If set, uses the prototypical evaluation during the inference."})
+                                              metadata={
+                                                  "help": "If set, uses the prototypical evaluation during the inference."})
     prototypical_similarity: Optional[str] = field(default="cos",
-        metadata={"help": "This can be `cos` for cosine similarity or `euc` for euclidean one."})
+                                                   metadata={
+                                                       "help": "This can be `cos` for cosine similarity or `euc` for euclidean one."})
     extra_embd_initializer_range: Optional[float] = field(default=0.02,
-        metadata={"help": "Defines the intialization range for the extra embedding added."}
-    )
+                                                          metadata={
+                                                              "help": "Defines the intialization range for the extra embedding added."}
+                                                          )
     train_in_batch: Optional[bool] = field(default=False,
-        metadata={"help": "If set, trains the model in batches."} )
-    decoding_strategy: Optional[str] = field(default="default", 
-       metadata={"help": "This can be `default` or `parallel`: to feed in the input"
-      "with masks only once to the encoder."})
+                                           metadata={"help": "If set, trains the model in batches."})
+    decoding_strategy: Optional[str] = field(default="default",
+                                             metadata={
+                                                 "help": "This can be `default` or `parallel`: to feed in the input"
+                                                         "with masks only once to the encoder."})
     soft_mask_labels_learning_rate: Optional[float] = field(default=1e-5)
     eval_soft_pet_aggregation: Optional[str] = field(
         default=None, metadata={"help": "defines aggregation for eval."}
     )
     soft_pet_aggregation: Optional[str] = field(
-       default=None, metadata={"help": "defines the aggregation operation for the losses."}
+        default=None, metadata={"help": "defines the aggregation operation for the losses."}
     )
     extra_tokens_init: Optional[str] = field(
-       default="tokens", metadata={"help": "Defines the initialization for label embeddings."
-       "`tokens`: initialize from random tokens, `random`: initialize randomly, `verbalizers`:" 
-       "initialize from verbalizers."}
+        default="tokens", metadata={"help": "Defines the initialization for label embeddings."
+                                            "`tokens`: initialize from random tokens, `random`: initialize randomly, `verbalizers`:"
+                                            "initialize from verbalizers."}
     )
     num_extra_tokens: Optional[int] = field(
-        default=-1, metadata={"help": "Defines the number of mask tokens added in perfect, in" 
-            "case of -1, it is computed from the length of verbalizers."}
+        default=-1, metadata={"help": "Defines the number of mask tokens added in perfect, in"
+                                      "case of -1, it is computed from the length of verbalizers."}
     )
     soft_pet: Optional[bool] = field(
         default=False, metadata={"help": "If set, uses perfect model by computing the loss of the PET in the soft way"
-        "by minimizing the embeddings of the tokens."}        
+                                         "by minimizing the embeddings of the tokens."}
     )
-    
+
+
 @dataclass
 class ModelArguments:
     """
@@ -73,7 +105,8 @@ class ModelArguments:
     )
     model_type: Optional[str] = field(
         default=None,
-        metadata={"help": "If training from scratch, pass a model type from gpt2, gpt2-large, gpt2-medium"} # + ", ".join(MODEL_TYPES)},
+        metadata={"help": "If training from scratch, pass a model type from gpt2, gpt2-large, gpt2-medium"}
+        # + ", ".join(MODEL_TYPES)},
     )
     config_overrides: Optional[str] = field(
         default=None,
@@ -107,6 +140,7 @@ class ModelArguments:
                     "with private models)."
         },
     )
+
     def __post_init__(self):
         if self.config_overrides is not None and (self.config_name is not None or self.model_name_or_path is not None):
             raise ValueError(
@@ -119,7 +153,7 @@ class DataTrainingArguments:
     """
     Arguments pertaining to what data we are going to input our model for training and eval.
     """
-    add_masks: Optional[bool] = field(default=True, metadata={"help": "If set, adds mask tokens to the input."} )
+    add_masks: Optional[bool] = field(default=True, metadata={"help": "If set, adds mask tokens to the input."})
     no_pattern: Optional[bool] = field(default=False, metadata={"help": "If set, removes the patterns."})
     data_dir: Optional[str] = field(default=None, metadata={"help": "Specifies the data directory."})
     data_seed: Optional[int] = field(default=100, metadata={"help": "Specifies the seed used to sample the data."})
@@ -184,7 +218,7 @@ class DataTrainingArguments:
     )
     pattern_id: Optional[int] = field(
         default=0, metadata={"help": "Defines a zero-based pattern index from the four available pattern."})
-    
+
 
 @dataclass
 class AdapterArguments:
@@ -210,4 +244,4 @@ class AdapterArguments:
     tune_biases: Optional[bool] = field(default=False,
                                         metadata={"help": "If set, tunes only biases."})
     tune_lm_head: Optional[bool] = field(default=False,
-                                         metadata={"help": "If set, tunes the lm-head also when tuning biases."})    
+                                         metadata={"help": "If set, tunes the lm-head also when tuning biases."})

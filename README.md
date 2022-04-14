@@ -120,3 +120,7 @@ If you find this repo useful, please cite our paper.
 
 
 [lm-bff-paper]: https://arxiv.org/abs/2012.15723
+
+## License
+
+The code in this repository is released under the [Apache 2.0 license](LICENSE)
