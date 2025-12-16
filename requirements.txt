@@ -1,4 +1,4 @@
-transformers==4.10.2
+transformers==4.53.0
 tabulate
 pandas 
 datasets==1.13
